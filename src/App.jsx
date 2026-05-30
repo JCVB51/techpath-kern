@@ -1,18 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Header from './components/Header.jsx'
 import StudentForm from './components/StudentForm.jsx'
 import ResultsSection from './components/ResultsSection.jsx'
 import RoadmapCard from './components/RoadmapCard.jsx'
 import sampleOpportunities from './data/sampleOpportunities.js'
+import { matchOpportunities } from './utils/matchOpportunities.js'
 
 function App() {
   const [studentProfile, setStudentProfile] = useState(null)
-  const [showResults, setShowResults] = useState(false)
+  const [matchedOpportunities, setMatchedOpportunities] = useState([])
+  const resultsRef = useRef(null)
 
   function handleFormSubmit(formData) {
+    const results = matchOpportunities(formData, sampleOpportunities)
     setStudentProfile(formData)
-    setShowResults(true)
+    setMatchedOpportunities(results)
   }
+
+  useEffect(() => {
+    if (studentProfile && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [studentProfile, matchedOpportunities])
 
   return (
     <div className="app">
@@ -21,11 +30,12 @@ function App() {
       <main className="main-content">
         <StudentForm onSubmit={handleFormSubmit} />
 
-        {showResults && studentProfile && (
+        {studentProfile && matchedOpportunities.length > 0 && (
           <>
             <ResultsSection
+              ref={resultsRef}
               student={studentProfile}
-              opportunities={sampleOpportunities}
+              opportunities={matchedOpportunities}
             />
             <RoadmapCard student={studentProfile} />
           </>

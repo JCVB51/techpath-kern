@@ -10,6 +10,17 @@ const initialFormState = {
   careerGoal: '',
 }
 
+export const demoStudentProfile = {
+  name: 'Daniela',
+  city: 'Bakersfield',
+  gradeLevel: 'College Student',
+  gpa: '3.6',
+  careerInterest: 'Computer Science / AI',
+  skills: 'JavaScript, teamwork, problem solving',
+  careerGoal:
+    'I want to become a machine learning engineer and build AI tools that help my community.',
+}
+
 function StudentForm({ onSubmit }) {
   const [formData, setFormData] = useState(initialFormState)
 
@@ -21,6 +32,11 @@ function StudentForm({ onSubmit }) {
   function handleSubmit(event) {
     event.preventDefault()
     onSubmit(formData)
+  }
+
+  function handleDemoClick() {
+    setFormData(demoStudentProfile)
+    onSubmit(demoStudentProfile)
   }
 
   return (
@@ -70,6 +86,7 @@ function StudentForm({ onSubmit }) {
               <option value="10th Grade">10th Grade</option>
               <option value="11th Grade">11th Grade</option>
               <option value="12th Grade">12th Grade</option>
+              <option value="College Student">College Student</option>
               <option value="College Freshman">College Freshman</option>
               <option value="College Sophomore">College Sophomore</option>
               <option value="College Junior">College Junior</option>
@@ -126,9 +143,18 @@ function StudentForm({ onSubmit }) {
           </label>
         </div>
 
-        <button type="submit" className="btn btn--primary">
-          Find My Opportunities
-        </button>
+        <div className="form-actions">
+          <button type="submit" className="btn btn--primary">
+            Find My Opportunities
+          </button>
+          <button
+            type="button"
+            className="btn btn--secondary"
+            onClick={handleDemoClick}
+          >
+            Try Demo Student
+          </button>
+        </div>
       </form>
     </section>
   )
