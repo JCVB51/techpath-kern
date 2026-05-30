@@ -1,4 +1,4 @@
-// Helper functions that explain eligibility in simple, student-friendly language.
+// Helper functions that explain eligibility in simple, encouraging language.
 
 const KERN_AREA_KEYWORDS = [
   'kern',
@@ -10,8 +10,28 @@ const KERN_AREA_KEYWORDS = [
   'tehachapi',
   'ridgecrest',
   'taft',
-  'mc farland',
   'mcfarland',
+  'lamont',
+  'rosamond',
+]
+
+const STEM_KEYWORDS = [
+  'stem',
+  'science',
+  'technology',
+  'engineering',
+  'math',
+  'computer',
+  'coding',
+  'programming',
+  'software',
+  'ai',
+  'artificial intelligence',
+  'machine learning',
+  'data',
+  'robotics',
+  'cyber',
+  'tech',
 ]
 
 function normalizeText(text) {
@@ -41,7 +61,9 @@ function countKeywordMatches(studentText, opportunityList) {
 
   for (const item of opportunityList) {
     const keyword = normalizeText(item)
-    if (studentWords.includes(keyword) || keyword.split(' ').some((word) => studentWords.includes(word))) {
+    const parts = keyword.split(' ').filter((word) => word.length > 2)
+
+    if (studentWords.includes(keyword) || parts.some((word) => studentWords.includes(word))) {
       matches += 1
     }
   }
@@ -67,25 +89,34 @@ function isGpaEligible(gpaValue, minimumGpa) {
   return gpa >= minimumGpa
 }
 
+function isStemStudent(studentProfile) {
+  const profileText = normalizeText(
+    `${studentProfile.careerInterest} ${studentProfile.skills} ${studentProfile.careerGoal}`,
+  )
+  return STEM_KEYWORDS.some((keyword) => profileText.includes(keyword))
+}
+
 /**
- * Returns a list of requirements the student may still need to meet.
+ * Returns supportive notes about things the student may want to double-check.
  */
 export function getMissingRequirements(studentProfile, opportunity) {
-  const missing = []
+  const notes = []
 
   if (!isGradeLevelEligible(studentProfile.gradeLevel, opportunity.gradeLevels)) {
-    missing.push(
-      `This opportunity is open to: ${opportunity.gradeLevels.join(', ')}. Your grade level is ${studentProfile.gradeLevel || 'not listed'}.`,
+    notes.push(
+      `You may need to double-check grade level — this opportunity lists: ${opportunity.gradeLevels.slice(0, 4).join(', ')}${opportunity.gradeLevels.length > 4 ? ', and others' : ''}. Your profile shows ${studentProfile.gradeLevel || 'no grade selected'}.`,
     )
   }
 
   const studentGpa = parseGpa(studentProfile.gpa)
   if (opportunity.minimumGpa > 0) {
     if (studentGpa === null) {
-      missing.push('Add a valid GPA so we can check if you meet the minimum requirement.')
+      notes.push(
+        'You may need to double-check your GPA — adding a valid number helps confirm eligibility.',
+      )
     } else if (studentGpa < opportunity.minimumGpa) {
-      missing.push(
-        `Minimum GPA is ${opportunity.minimumGpa}. Your GPA is ${studentGpa}.`,
+      notes.push(
+        `This could still be worth reviewing if you meet other requirements — the listed minimum GPA is ${opportunity.minimumGpa} and your profile shows ${studentGpa}. Some programs allow appeals or look at your full application.`,
       )
     }
   }
@@ -95,76 +126,102 @@ export function getMissingRequirements(studentProfile, opportunity) {
     opportunity.interests,
   )
   if (interestMatches === 0) {
-    missing.push(
-      `This opportunity focuses on: ${opportunity.interests.slice(0, 3).join(', ')}. Your career interest may not align closely yet.`,
+    notes.push(
+      `This opportunity focuses on areas like ${opportunity.interests.slice(0, 3).join(', ')}. It could still be worth exploring if you want to try something new in that field.`,
     )
   }
 
   const skillMatches = countKeywordMatches(studentProfile.skills, opportunity.skills)
   if (skillMatches === 0) {
-    missing.push(
-      `Helpful skills include: ${opportunity.skills.slice(0, 3).join(', ')}. Consider building these skills over time.`,
+    notes.push(
+      `Helpful skills for this opportunity include ${opportunity.skills.slice(0, 3).join(', ')}. Many programs welcome beginners who are willing to learn.`,
     )
   }
 
   if (
-    textIncludesKeyword(opportunity.location, ['bakersfield', 'kern']) &&
+    textIncludesKeyword(opportunity.location, ['bakersfield', 'kern', 'central valley']) &&
     studentProfile.city &&
     !isKernCountyStudent(studentProfile.city)
   ) {
-    missing.push(
-      `This is a local Kern County opportunity. Confirm that ${studentProfile.city} meets any residency requirements.`,
+    notes.push(
+      `This is a Kern County–focused opportunity. You may need to double-check whether students from ${studentProfile.city} are eligible for local residency requirements.`,
     )
   }
 
-  return missing
+  const tagText = normalizeText(
+    `${studentProfile.careerInterest} ${studentProfile.careerGoal} ${studentProfile.skills}`,
+  )
+  const firstGenTag = opportunity.eligibilityTags.some((tag) =>
+    normalizeText(tag).includes('first-generation'),
+  )
+  if (firstGenTag && !tagText.includes('first') && !tagText.includes('first-gen')) {
+    notes.push(
+      'This program supports first-generation students. If that describes you, it could be an especially good fit — you may want to confirm eligibility on the application page.',
+    )
+  }
+
+  return notes
 }
 
 /**
- * Returns a simple explanation of why a student may or may not qualify.
+ * Returns an encouraging explanation of why a student may be a good match.
  */
 export function explainEligibility(studentProfile, opportunity) {
-  const reasons = []
-  const missing = getMissingRequirements(studentProfile, opportunity)
+  const strengths = []
 
   if (isGradeLevelEligible(studentProfile.gradeLevel, opportunity.gradeLevels)) {
-    reasons.push(`Your grade level (${studentProfile.gradeLevel}) fits this opportunity.`)
+    strengths.push(
+      `You are a strong fit because your grade level (${studentProfile.gradeLevel}) matches what this opportunity accepts.`,
+    )
   }
 
-  if (isGpaEligible(studentProfile.gpa, opportunity.minimumGpa)) {
-    if (opportunity.minimumGpa > 0) {
-      reasons.push(`Your GPA meets the minimum requirement of ${opportunity.minimumGpa}.`)
-    } else {
-      reasons.push('There is no minimum GPA requirement for this opportunity.')
-    }
+  const studentGpa = parseGpa(studentProfile.gpa)
+  if (opportunity.minimumGpa === 0) {
+    strengths.push('You are a strong fit because there is no minimum GPA requirement listed.')
+  } else if (isGpaEligible(studentProfile.gpa, opportunity.minimumGpa)) {
+    strengths.push(
+      `You are a strong fit because your GPA of ${studentGpa} meets the listed minimum of ${opportunity.minimumGpa}.`,
+    )
+  } else if (studentGpa !== null && studentGpa >= opportunity.minimumGpa - 0.3) {
+    strengths.push(
+      `Your GPA of ${studentGpa} is close to the listed minimum of ${opportunity.minimumGpa} — this could still be worth reviewing alongside your other strengths.`,
+    )
   }
 
   const interestMatches = countKeywordMatches(
     `${studentProfile.careerInterest} ${studentProfile.careerGoal}`,
     opportunity.interests,
   )
-  if (interestMatches > 0) {
-    reasons.push(
-      `Your career interest connects with topics like ${opportunity.interests.slice(0, 2).join(' and ')}.`,
+  if (interestMatches >= 2) {
+    strengths.push(
+      `You are a strong fit because your career interest aligns closely with ${opportunity.interests.slice(0, 2).join(' and ')}.`,
+    )
+  } else if (interestMatches === 1) {
+    strengths.push(
+      `Your career interest connects with topics like ${opportunity.interests[0]} — a good sign for this ${opportunity.type.toLowerCase()}.`,
     )
   }
 
   const skillMatches = countKeywordMatches(studentProfile.skills, opportunity.skills)
-  if (skillMatches > 0) {
-    reasons.push('Some of your listed skills match what this opportunity looks for.')
+  if (skillMatches >= 2) {
+    strengths.push('You are a strong fit because several of your listed skills match what this opportunity values.')
+  } else if (skillMatches === 1) {
+    strengths.push('At least one of your skills matches what this opportunity is looking for.')
   }
 
   if (isKernCountyStudent(studentProfile.city)) {
-    reasons.push(`Because you are in ${studentProfile.city}, local Kern County opportunities are especially relevant.`)
+    strengths.push(
+      `Because you are in ${studentProfile.city}, local Kern County opportunities like this one are especially relevant to you.`,
+    )
   }
 
-  if (reasons.length === 0 && missing.length > 0) {
-    return 'You may still be able to apply, but you should review the requirements carefully before starting.'
+  if (isStemStudent(studentProfile) && countKeywordMatches('stem technology engineering', opportunity.interests) > 0) {
+    strengths.push('Your STEM and technology interests make this type of opportunity a natural area to explore.')
   }
 
-  if (reasons.length === 0) {
-    return 'This opportunity may be worth exploring. Compare your profile with the listed requirements.'
+  if (strengths.length === 0) {
+    return 'This could still be worth reviewing — compare your profile with the listed requirements and reach out to the program contact if you have questions.'
   }
 
-  return reasons.join(' ')
+  return strengths.slice(0, 3).join(' ')
 }

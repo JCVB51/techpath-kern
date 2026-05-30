@@ -2,197 +2,160 @@
 
 **AI Opportunity Navigator for Kern County Students**
 
-TechPath Kern is a hackathon project designed to help Kern County students discover scholarships, internships, hackathons, STEM programs, summer opportunities, and career pathways they might otherwise miss.
+TechPath Kern helps Kern County students discover scholarships, internships, STEM programs, hackathons, summer opportunities, and career pathways they might otherwise miss.
 
-The project is focused on students in Kern County, California, especially high school students, college students, first-generation students, low-income students, and students interested in technology, computer science, AI, engineering, or STEM careers.
+Built for high school and college students — especially first-generation, low-income, and STEM-interested learners in Bakersfield and across Kern County.
 
----
-
-## Project Purpose
-
-Many students miss valuable academic and career opportunities because information is scattered across many websites, deadlines are hard to track, and eligibility requirements can be confusing.
-
-TechPath Kern helps students find relevant opportunities by allowing them to enter a short profile and receive personalized recommendations, simple eligibility explanations, application checklists, and a 30-day action plan.
+**Hackathon tracks:** AI + ML · Education · Social Impact
 
 ---
 
-## Problem Statement
+## Quick Start
 
-Kern County students often miss scholarships, internships, STEM programs, hackathons, and career-building opportunities because:
+```bash
+git clone <repository-url>
+cd techpath-kern
+npm install
+npm run dev
+```
 
-- Opportunities are spread across many different websites.
-- Deadlines are difficult to track.
-- Eligibility requirements are often confusing.
-- Students may not know what local or regional opportunities exist.
-- First-generation and low-income students may not have enough guidance on applications, essays, or career pathways.
+Open the URL shown in the terminal (usually `http://localhost:5173`).
 
----
+### Other commands
 
-## Solution
-
-TechPath Kern uses AI-assisted matching to connect students with opportunities that fit their background, interests, skills, and goals.
-
-Students can enter information such as:
-
-- GPA
-- Grade level
-- School or city
-- Career interests
-- Skills
-- Career goals
-- Optional eligibility information
-
-The app then returns:
-
-- Matching scholarships
-- Internship opportunities
-- Hackathons and STEM events
-- Summer programs
-- Simple eligibility explanations
-- Application checklists
-- Essay topic ideas
-- A personalized 30-day action plan
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start local development server |
+| `npm run build` | Production build → `dist/` |
+| `npm run preview` | Preview the production build locally |
 
 ---
 
-## Example Use Case
+## Demo Flow (for judges)
 
-A student enters:
+1. Open the app and read the landing section.
+2. Click **Use Demo Profile** to fill in a sample Bakersfield student (Maria Lopez).
+3. Click **Find My Opportunities**.
+4. Review ranked opportunity cards (High / Medium / Low match).
+5. Scroll to the personalized **30-Day Action Plan**.
 
-> I am a CS student from Bakersfield interested in AI.
-
-TechPath Kern can return:
-
-- Local or regional scholarships related to computer science or STEM
-- Internship or technology opportunity suggestions
-- Hackathons or coding events
-- Recommended skills to learn
-- A roadmap toward becoming a machine learning engineer
-- Action steps for the next 30 days
+Or fill out the form manually to test different profiles (healthcare, AgTech, first-gen, etc.).
 
 ---
 
-## Target Users
+## MVP Features
 
-TechPath Kern is designed for:
+- **Student profile form** with validation and demo profile button
+- **12 curated demo opportunities** locally relevant to Kern County
+- **Rule-based matching** — scores opportunities by interest, skills, GPA, grade, location, and eligibility tags
+- **Eligibility explanations** — encouraging, student-friendly match reasons
+- **Tips before you apply** — supportive notes on things to double-check
+- **Opportunity cards** — type, deadline, location, checklist, match score
+- **30-day roadmap** — personalized Week 1–4 action plan based on top matches
+- **Responsive layout** for laptop and mobile demo screens
 
-- High school students in Kern County
-- College students in Kern County
-- First-generation college students
-- Low-income students
-- Students interested in technology, AI, computer science, engineering, or STEM
-- Students who need help understanding scholarships and career pathways
-
----
-
-## Key Features
-
-### Student Profile Form
-
-Students enter basic academic and career information so the app can personalize recommendations.
-
-### Opportunity Matching
-
-The app matches students with relevant scholarships, internships, STEM programs, hackathons, and other opportunities.
-
-### Simple Eligibility Explanations
-
-The app explains why a student may be a good match for each opportunity using clear and simple language.
-
-### Application Checklists
-
-Each opportunity can include a checklist of possible application materials, such as essays, transcripts, recommendation letters, resumes, or forms.
-
-### 30-Day Action Plan
-
-The app generates a short roadmap with practical next steps the student can take over the next month.
-
----
-
-## AI/ML Component
-
-TechPath Kern uses AI to assist with:
-
-- Matching students to opportunities
-- Explaining eligibility requirements
-- Summarizing opportunity descriptions
-- Suggesting essay topics
-- Generating personalized learning and career roadmaps
-
-For the hackathon MVP, the project uses a curated opportunity dataset and AI-assisted explanations instead of training a custom machine learning model.
-
----
-
-## Hackathon Tracks
-
-This project aligns with the following hackathon themes:
-
-### AI + ML
-
-Uses AI to personalize opportunity discovery, explain eligibility, and generate student roadmaps.
-
-### Social Impact
-
-Helps reduce opportunity gaps for students who may not have easy access to college and career guidance.
-
-### Education
-
-Supports college readiness, STEM exploration, scholarship preparation, and career planning.
-
-### Open Track
-
-Can expand into a broader platform for local jobs, mentorship, school programs, and community resources.
-
----
-
-## Minimum Viable Product
-
-The first version of TechPath Kern will include:
-
-- A student profile form
-- A curated opportunity dataset
-- A results page with matched opportunities
-- Simple match explanations
-- Application checklist suggestions
-- A 30-day action plan
+> **Note:** Opportunity data in `src/data/opportunities.js` is demo/sample data for the hackathon MVP. Entries are not verified real programs unless noted otherwise. No official links are included.
 
 ---
 
 ## Tech Stack
 
-Planned stack:
-
-- React
-- Vite
-- JavaScript
-- CSS or Tailwind CSS
-- JSON-based opportunity data
-- Optional AI API integration
+- **React 19** + **Vite 6**
+- **JavaScript** (no TypeScript)
+- **Plain CSS** (no UI library)
+- Local JavaScript data files — no external database
+- No authentication in MVP
+- No AI API yet — matching uses rule-based logic designed for future AI integration
 
 ---
 
-## Suggested Project Structure
+## Project Structure
 
 ```txt
 techpath-kern/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── Header.jsx
-│   │   ├── StudentForm.jsx
-│   │   ├── OpportunityCard.jsx
-│   │   ├── ResultsSection.jsx
-│   │   └── RoadmapCard.jsx
-│   ├── data/
-│   │   └── opportunities.json
-│   ├── utils/
-│   │   ├── matchOpportunities.js
-│   │   └── sampleProfiles.js
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── .env.example
-├── .gitignore
-├── README.md
+├── index.html
 ├── package.json
-└── vite.config.js
+├── vite.config.js
+├── README.md
+├── .gitignore
+└── src/
+    ├── main.jsx                 # React entry point
+    ├── App.jsx                  # Layout, form submit, match + roadmap flow
+    ├── index.css                # Global styles
+    ├── components/
+    │   ├── Header.jsx           # Landing header + hackathon track badges
+    │   ├── StudentForm.jsx      # Profile form, validation, demo button
+    │   ├── ResultsSection.jsx   # Ranked results + profile summary
+    │   ├── OpportunityCard.jsx  # Single opportunity card
+    │   └── RoadmapCard.jsx      # 30-day action plan
+    ├── data/
+    │   └── opportunities.js     # Curated demo opportunity dataset
+    ├── utils/
+    │   └── matchOpportunities.js # Rule-based scoring and ranking
+    └── services/
+        ├── eligibilityService.js # Match explanations + tips
+        └── roadmapService.js     # Personalized 30-day roadmap
+```
+
+---
+
+## How Data Flows
+
+1. Student submits the profile form in `StudentForm.jsx`.
+2. `App.jsx` calls `matchOpportunities(profile, opportunities)`.
+3. `matchOpportunities.js` scores each opportunity and uses `eligibilityService.js` for explanations.
+4. Results render in `ResultsSection.jsx` → `OpportunityCard.jsx`.
+5. `generateRoadmap()` in `roadmapService.js` builds a 4-week plan from the profile and top matches.
+6. `RoadmapCard.jsx` displays the roadmap.
+
+---
+
+## Target Users
+
+- High school students in Kern County
+- College students in Kern County
+- First-generation college students
+- Low-income students
+- Students interested in AI, computer science, engineering, healthcare, AgTech, or STEM careers
+
+---
+
+## Branch Strategy
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Stable demo / submission branch |
+| `testing` | Integrated MVP — frontend + backend-style logic |
+| `frontend` | UI work (merged into `testing`) |
+| `backend` | Data and matching logic (merged into `testing`) |
+
+### Merge `testing` → `main`
+
+When `testing` is ready:
+
+```bash
+git checkout main
+git pull origin main
+git merge testing
+npm install
+npm run build
+git push origin main
+```
+
+Resolve any conflicts in favor of the integrated `testing` MVP unless `main` has submission-specific changes.
+
+---
+
+## Future Work
+
+- AI API integration for smarter match explanations and essay suggestions
+- Verified real opportunity dataset with official sources
+- User accounts and saved profiles
+- Deadline reminders and calendar export
+- Counselor / teacher dashboard
+
+---
+
+## License
+
+Hackathon MVP — check with the team before production use.
