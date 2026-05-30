@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Header from './components/Header.jsx'
 import StudentForm from './components/StudentForm.jsx'
 import ResultsSection from './components/ResultsSection.jsx'
@@ -8,11 +8,58 @@ import opportunities from './data/opportunities.js'
 import { matchOpportunities } from './utils/matchOpportunities.js'
 import { generateRoadmap } from './services/roadmapService.js'
 
+const DEFAULT_MATCH_LEVEL = 'All Matches'
+const DEFAULT_OPPORTUNITY_TYPE = 'All Types'
+const DEFAULT_SORT_OPTION = 'Best Match'
+
+// Rolling or open deadlines sort near the end of the list.
+function parseDeadline(deadline) {
+  if (!deadline) return Number.MAX_SAFE_INTEGER
+
+  const lower = deadline.toLowerCase()
+  if (lower.includes('rolling') || lower.includes('open year-round')) {
+    return Number.MAX_SAFE_INTEGER - 1
+  }
+
+  const parsed = Date.parse(deadline)
+  return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed
+}
+
+function getDisplayedOpportunities(matched, matchLevel, opportunityType, sortOption) {
+  let results = matched.filter((opportunity) => {
+    const levelMatch =
+      matchLevel === DEFAULT_MATCH_LEVEL || opportunity.matchLevel === matchLevel
+    const typeMatch =
+      opportunityType === DEFAULT_OPPORTUNITY_TYPE || opportunity.type === opportunityType
+    return levelMatch && typeMatch
+  })
+
+  // Copy before sorting so matchedOpportunities is never mutated.
+  results = [...results]
+
+  if (sortOption === 'Deadline Soonest') {
+    results.sort((a, b) => parseDeadline(a.deadline) - parseDeadline(b.deadline))
+  } else if (sortOption === 'Opportunity Type') {
+    results.sort((a, b) => {
+      const typeCompare = a.type.localeCompare(b.type)
+      if (typeCompare !== 0) return typeCompare
+      return b.matchScore - a.matchScore
+    })
+  } else {
+    results.sort((a, b) => b.matchScore - a.matchScore)
+  }
+
+  return results
+}
+
 function App() {
   const [studentProfile, setStudentProfile] = useState(null)
   const [matchedOpportunities, setMatchedOpportunities] = useState([])
   const [roadmap, setRoadmap] = useState([])
   const [savedOpportunities, setSavedOpportunities] = useState([])
+  const [selectedMatchLevel, setSelectedMatchLevel] = useState(DEFAULT_MATCH_LEVEL)
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(DEFAULT_OPPORTUNITY_TYPE)
+  const [selectedSortOption, setSelectedSortOption] = useState(DEFAULT_SORT_OPTION)
   const resultsRef = useRef(null)
 
   function handleFormSubmit(formData) {
@@ -21,6 +68,9 @@ function App() {
     setMatchedOpportunities(matches)
     setRoadmap(generateRoadmap(formData, matches))
     setSavedOpportunities([])
+    setSelectedMatchLevel(DEFAULT_MATCH_LEVEL)
+    setSelectedOpportunityType(DEFAULT_OPPORTUNITY_TYPE)
+    setSelectedSortOption(DEFAULT_SORT_OPTION)
   }
 
   function toggleSaveOpportunity(opportunity) {
@@ -34,6 +84,17 @@ function App() {
   }
 
   const savedOpportunityIds = savedOpportunities.map((item) => item.id)
+
+  const displayedOpportunities = useMemo(
+    () =>
+      getDisplayedOpportunities(
+        matchedOpportunities,
+        selectedMatchLevel,
+        selectedOpportunityType,
+        selectedSortOption,
+      ),
+    [matchedOpportunities, selectedMatchLevel, selectedOpportunityType, selectedSortOption],
+  )
 
   useEffect(() => {
     if (studentProfile && resultsRef.current) {
@@ -71,9 +132,16 @@ function App() {
             <ResultsSection
               ref={resultsRef}
               student={studentProfile}
-              opportunities={matchedOpportunities}
+              opportunities={displayedOpportunities}
+              totalCount={matchedOpportunities.length}
               savedOpportunityIds={savedOpportunityIds}
               onToggleSave={toggleSaveOpportunity}
+              selectedMatchLevel={selectedMatchLevel}
+              selectedOpportunityType={selectedOpportunityType}
+              selectedSortOption={selectedSortOption}
+              onMatchLevelChange={setSelectedMatchLevel}
+              onOpportunityTypeChange={setSelectedOpportunityType}
+              onSortOptionChange={setSelectedSortOption}
             />
             <SavedOpportunities savedOpportunities={savedOpportunities} />
             <RoadmapCard student={studentProfile} roadmap={roadmap} />

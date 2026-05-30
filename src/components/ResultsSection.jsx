@@ -1,12 +1,26 @@
 import { forwardRef } from 'react'
 import OpportunityCard from './OpportunityCard.jsx'
+import ResultsControls from './ResultsControls.jsx'
 
 const ResultsSection = forwardRef(function ResultsSection(
-  { student, opportunities, savedOpportunityIds, onToggleSave },
+  {
+    student,
+    opportunities,
+    totalCount,
+    savedOpportunityIds,
+    onToggleSave,
+    selectedMatchLevel,
+    selectedOpportunityType,
+    selectedSortOption,
+    onMatchLevelChange,
+    onOpportunityTypeChange,
+    onSortOptionChange,
+  },
   ref,
 ) {
   const highCount = opportunities.filter((item) => item.matchLevel === 'High').length
   const mediumCount = opportunities.filter((item) => item.matchLevel === 'Medium').length
+  const isFiltered = opportunities.length !== totalCount
 
   return (
     <section className="results-section" ref={ref} id="results-section">
@@ -14,14 +28,16 @@ const ResultsSection = forwardRef(function ResultsSection(
         <h2 className="section-title">Your Matched Opportunities</h2>
         <p className="section-subtitle">
           Ranked results for <strong>{student.name || 'you'}</strong>
-          {student.city ? ` in ${student.city}` : ''}. Opportunities are sorted
-          from best fit to lowest based on your grade, GPA, interests, skills,
-          and location.
+          {student.city ? ` in ${student.city}` : ''}. Use the filters below to
+          explore by match level or type, and sort by best match, deadline, or
+          opportunity type.
         </p>
 
         <div className="results-summary">
           <span className="results-summary__item">
-            {opportunities.length} opportunities found
+            {isFiltered
+              ? `${opportunities.length} of ${totalCount} opportunities shown`
+              : `${totalCount} opportunities found`}
           </span>
           {highCount > 0 && (
             <span className="results-summary__item results-summary__item--high">
@@ -46,17 +62,35 @@ const ResultsSection = forwardRef(function ResultsSection(
         </div>
       </div>
 
-      <div className="opportunity-grid">
-        {opportunities.map((opportunity, index) => (
-          <OpportunityCard
-            key={opportunity.id}
-            opportunity={opportunity}
-            rank={index + 1}
-            isSaved={savedOpportunityIds.includes(opportunity.id)}
-            onToggleSave={onToggleSave}
-          />
-        ))}
-      </div>
+      <ResultsControls
+        selectedMatchLevel={selectedMatchLevel}
+        selectedOpportunityType={selectedOpportunityType}
+        selectedSortOption={selectedSortOption}
+        onMatchLevelChange={onMatchLevelChange}
+        onOpportunityTypeChange={onOpportunityTypeChange}
+        onSortOptionChange={onSortOptionChange}
+      />
+
+      {opportunities.length === 0 ? (
+        <div className="results-section__empty card">
+          <p>
+            No opportunities match these filters yet. Try changing the filters or
+            showing all matches.
+          </p>
+        </div>
+      ) : (
+        <div className="opportunity-grid">
+          {opportunities.map((opportunity, index) => (
+            <OpportunityCard
+              key={opportunity.id}
+              opportunity={opportunity}
+              rank={index + 1}
+              isSaved={savedOpportunityIds.includes(opportunity.id)}
+              onToggleSave={onToggleSave}
+            />
+          ))}
+        </div>
+      )}
     </section>
   )
 })
