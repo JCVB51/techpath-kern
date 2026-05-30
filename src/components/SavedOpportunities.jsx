@@ -47,6 +47,9 @@ function SavedOpportunities({ savedOpportunities }) {
             Save opportunities from your results to build a simple application plan.
             Filter by type and use the checklist plus next action to stay organized.
           </p>
+          <p className="saved-opportunities__hint">
+            Saving opportunities will personalize your 30-day roadmap.
+          </p>
         </div>
         {savedOpportunities.length > 0 && (
           <span className="saved-opportunities__count">

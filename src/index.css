@@ -193,6 +193,23 @@ p {
   margin-top: 0.5rem;
 }
 
+.roadmap-source-note {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: var(--color-primary-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.saved-opportunities__hint {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
 .roadmap-section {
   padding-top: 0.5rem;
 }

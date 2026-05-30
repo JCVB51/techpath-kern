@@ -5,8 +5,12 @@ const weekLabels = {
   'Week 4': 'Apply & follow up',
 }
 
-function RoadmapCard({ student, roadmap }) {
+function RoadmapCard({ student, roadmap, hasSavedOpportunities }) {
   const firstName = student.name ? student.name.split(' ')[0] : 'Student'
+
+  const sourceMessage = hasSavedOpportunities
+    ? 'Your roadmap is based on your saved opportunities.'
+    : 'Your roadmap is based on your top matched opportunities.'
 
   return (
     <section className="roadmap-section page-section" id="roadmap">
@@ -18,11 +22,12 @@ function RoadmapCard({ student, roadmap }) {
             {firstName}, here is a simple week-by-week plan to help you take action.
             Small steps add up — you do not need to do everything at once.
           </p>
+          <p className="roadmap-source-note">{sourceMessage}</p>
         </div>
       </div>
 
       <div className="card roadmap-card">
-      <ol className="roadmap-list">
+        <ol className="roadmap-list">
         {roadmap.map((weekPlan, weekIndex) => (
           <li key={weekPlan.week} className="roadmap-step">
             <div className="roadmap-step__header">

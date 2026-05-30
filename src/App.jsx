@@ -63,7 +63,6 @@ function SectionPlaceholder({ id, title, message }) {
 function App() {
   const [studentProfile, setStudentProfile] = useState(null)
   const [matchedOpportunities, setMatchedOpportunities] = useState([])
-  const [roadmap, setRoadmap] = useState([])
   const [savedOpportunities, setSavedOpportunities] = useState([])
   const [selectedMatchLevel, setSelectedMatchLevel] = useState(DEFAULT_MATCH_LEVEL)
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(DEFAULT_OPPORTUNITY_TYPE)
@@ -74,7 +73,6 @@ function App() {
     const matches = matchOpportunities(formData, opportunities)
     setStudentProfile(formData)
     setMatchedOpportunities(matches)
-    setRoadmap(generateRoadmap(formData, matches))
     setSavedOpportunities([])
     setSelectedMatchLevel(DEFAULT_MATCH_LEVEL)
     setSelectedOpportunityType(DEFAULT_OPPORTUNITY_TYPE)
@@ -92,6 +90,21 @@ function App() {
   }
 
   const savedOpportunityIds = savedOpportunities.map((item) => item.id)
+
+  // Use saved opportunities for the roadmap when available; otherwise top matches.
+  const roadmapOpportunities = useMemo(() => {
+    if (savedOpportunities.length > 0) {
+      return savedOpportunities
+    }
+    return matchedOpportunities
+  }, [savedOpportunities, matchedOpportunities])
+
+  const roadmap = useMemo(() => {
+    if (!studentProfile || roadmapOpportunities.length === 0) {
+      return []
+    }
+    return generateRoadmap(studentProfile, roadmapOpportunities)
+  }, [studentProfile, roadmapOpportunities])
 
   const displayedOpportunities = useMemo(
     () =>
@@ -167,7 +180,11 @@ function App() {
               onSortOptionChange={setSelectedSortOption}
             />
             <SavedOpportunities savedOpportunities={savedOpportunities} />
-            <RoadmapCard student={studentProfile} roadmap={roadmap} />
+            <RoadmapCard
+              student={studentProfile}
+              roadmap={roadmap}
+              hasSavedOpportunities={savedOpportunities.length > 0}
+            />
           </>
         )}
       </main>
