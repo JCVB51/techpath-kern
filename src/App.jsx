@@ -68,6 +68,20 @@ function App() {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(DEFAULT_OPPORTUNITY_TYPE)
   const [selectedSortOption, setSelectedSortOption] = useState(DEFAULT_SORT_OPTION)
   const resultsRef = useRef(null)
+  const shouldScrollToResultsRef = useRef(false)
+
+  // Start at the top on first load/refresh (ignore restored scroll position or URL hash).
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+
+    window.scrollTo(0, 0)
+  }, [])
 
   function handleFormSubmit(formData) {
     const matches = matchOpportunities(formData, opportunities)
@@ -77,6 +91,7 @@ function App() {
     setSelectedMatchLevel(DEFAULT_MATCH_LEVEL)
     setSelectedOpportunityType(DEFAULT_OPPORTUNITY_TYPE)
     setSelectedSortOption(DEFAULT_SORT_OPTION)
+    shouldScrollToResultsRef.current = true
   }
 
   function toggleSaveOpportunity(opportunity) {
@@ -118,8 +133,9 @@ function App() {
   )
 
   useEffect(() => {
-    if (studentProfile && resultsRef.current) {
+    if (shouldScrollToResultsRef.current && studentProfile && resultsRef.current) {
       resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      shouldScrollToResultsRef.current = false
     }
   }, [studentProfile, matchedOpportunities])
 
