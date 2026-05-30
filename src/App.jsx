@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Header from './components/Header.jsx'
 import StudentForm from './components/StudentForm.jsx'
 import ResultsSection from './components/ResultsSection.jsx'
@@ -11,15 +11,20 @@ function App() {
   const [studentProfile, setStudentProfile] = useState(null)
   const [matchedOpportunities, setMatchedOpportunities] = useState([])
   const [roadmap, setRoadmap] = useState([])
-  const [showResults, setShowResults] = useState(false)
+  const resultsRef = useRef(null)
 
   function handleFormSubmit(formData) {
     const matches = matchOpportunities(formData, opportunities)
     setStudentProfile(formData)
     setMatchedOpportunities(matches)
     setRoadmap(generateRoadmap(formData, matches))
-    setShowResults(true)
   }
+
+  useEffect(() => {
+    if (studentProfile && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [studentProfile, matchedOpportunities])
 
   return (
     <div className="app">
@@ -28,9 +33,10 @@ function App() {
       <main className="main-content">
         <StudentForm onSubmit={handleFormSubmit} />
 
-        {showResults && studentProfile && (
+        {studentProfile && matchedOpportunities.length > 0 && (
           <>
             <ResultsSection
+              ref={resultsRef}
               student={studentProfile}
               opportunities={matchedOpportunities}
             />

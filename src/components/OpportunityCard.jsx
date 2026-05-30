@@ -1,11 +1,16 @@
-function OpportunityCard({ opportunity }) {
-  const matchClassMap = {
-    High: 'match-badge match-badge--high',
-    Medium: 'match-badge match-badge--medium',
-    Low: 'match-badge match-badge--low',
+function getMatchBadgeClass(matchLevel) {
+  if (matchLevel === 'High') {
+    return 'match-badge match-badge--excellent'
   }
-  const matchClass = matchClassMap[opportunity.matchLevel] || matchClassMap.Medium
 
+  if (matchLevel === 'Medium') {
+    return 'match-badge match-badge--strong'
+  }
+
+  return 'match-badge match-badge--low'
+}
+
+function OpportunityCard({ opportunity }) {
   return (
     <article className="opportunity-card">
       <div className="opportunity-card__header">
@@ -13,8 +18,19 @@ function OpportunityCard({ opportunity }) {
           <p className="opportunity-card__type">{opportunity.type}</p>
           <h3 className="opportunity-card__title">{opportunity.name}</h3>
         </div>
-        <span className={matchClass}>{opportunity.matchLevel} Match</span>
+        <div className="opportunity-card__match">
+          <span className={getMatchBadgeClass(opportunity.matchLevel)}>
+            {opportunity.matchLevel} Match
+          </span>
+          {typeof opportunity.matchScore === 'number' && (
+            <span className="match-score">{opportunity.matchScore}% match</span>
+          )}
+        </div>
       </div>
+
+      <p className="opportunity-card__location">
+        <strong>Location:</strong> {opportunity.location}
+      </p>
 
       <p className="opportunity-card__deadline">
         <strong>Deadline:</strong> {opportunity.deadline}
@@ -39,11 +55,15 @@ function OpportunityCard({ opportunity }) {
       <div className="opportunity-card__section">
         <h4>Application checklist</h4>
         <ul className="checklist">
-          {opportunity.checklist.map((item) => (
-            <li key={item}>{item}</li>
+          {opportunity.checklist.map((item, index) => (
+            <li key={`${opportunity.id}-${index}`}>{item}</li>
           ))}
         </ul>
       </div>
+
+      <button type="button" className="btn btn--outline">
+        Learn More / Apply Soon
+      </button>
     </article>
   )
 }
