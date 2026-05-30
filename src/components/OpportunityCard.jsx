@@ -10,11 +10,12 @@ function getMatchBadgeClass(matchLevel) {
   return 'match-badge match-badge--low'
 }
 
-function OpportunityCard({ opportunity }) {
+function OpportunityCard({ opportunity, rank }) {
   return (
     <article className="opportunity-card">
       <div className="opportunity-card__header">
         <div>
+          {rank && <p className="opportunity-card__rank">#{rank} ranked match</p>}
           <p className="opportunity-card__type">{opportunity.type}</p>
           <h3 className="opportunity-card__title">{opportunity.name}</h3>
         </div>
@@ -36,15 +37,18 @@ function OpportunityCard({ opportunity }) {
         <strong>Deadline:</strong> {opportunity.deadline}
       </p>
 
-      <div className="opportunity-card__section">
+      <div className="opportunity-card__section opportunity-card__section--highlight">
         <h4>Why it matches you</h4>
         <p>{opportunity.whyItMatches}</p>
       </div>
 
       {opportunity.missingRequirements?.length > 0 && (
-        <div className="opportunity-card__section">
-          <h4>Things to double-check</h4>
-          <ul className="checklist checklist--notes">
+        <div className="opportunity-card__section opportunity-card__section--tips">
+          <h4>Tips before you apply</h4>
+          <p className="tips-intro">
+            This could still be a great fit — here are a few things to review:
+          </p>
+          <ul className="checklist checklist--tips">
             {opportunity.missingRequirements.map((item) => (
               <li key={item}>{item}</li>
             ))}

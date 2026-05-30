@@ -8,9 +8,14 @@ function Header() {
           AI Opportunity Navigator for Kern County Students
         </p>
         <p className="header__description">
-          Discover scholarships, internships, STEM programs, hackathons, and
-          career pathways tailored to your goals — all in one place.
+          Enter your profile once and discover scholarships, internships, STEM
+          programs, and career pathways matched to your goals.
         </p>
+        <div className="header__tracks" aria-label="Hackathon tracks">
+          <span className="header__track">AI + ML</span>
+          <span className="header__track">Education</span>
+          <span className="header__track">Social Impact</span>
+        </div>
       </div>
     </header>
   )

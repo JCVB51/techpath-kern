@@ -26,6 +26,8 @@ function App() {
     }
   }, [studentProfile, matchedOpportunities])
 
+  const hasResults = studentProfile && matchedOpportunities.length > 0
+
   return (
     <div className="app">
       <Header />
@@ -33,7 +35,23 @@ function App() {
       <main className="main-content">
         <StudentForm onSubmit={handleFormSubmit} />
 
-        {studentProfile && matchedOpportunities.length > 0 && (
+        {!hasResults && (
+          <section className="card empty-state">
+            <h2 className="section-title">Ready to explore?</h2>
+            <p className="section-subtitle">
+              Fill out your profile above or click <strong>Use Demo Profile</strong>{' '}
+              to try a sample student from Bakersfield. We will rank scholarships,
+              internships, STEM programs, and more based on your answers.
+            </p>
+            <ul className="empty-state__steps">
+              <li>1. Enter your profile (or use the demo)</li>
+              <li>2. See ranked opportunity matches</li>
+              <li>3. Follow your personalized 30-day action plan</li>
+            </ul>
+          </section>
+        )}
+
+        {hasResults && (
           <>
             <ResultsSection
               ref={resultsRef}

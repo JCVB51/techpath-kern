@@ -92,6 +92,23 @@ p {
   max-width: 680px;
   color: rgba(255, 255, 255, 0.92);
   font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+}
+
+.header__tracks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.header__track {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .card {
@@ -151,6 +168,41 @@ p {
   border-color: var(--color-primary);
 }
 
+.form-field--invalid input,
+.form-field--invalid select,
+.form-field--invalid textarea {
+  border-color: #f87171;
+}
+
+.field-error {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+.form-message {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.form-message--error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.empty-state__steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-muted);
+}
+
+.empty-state__steps li + li {
+  margin-top: 0.35rem;
+}
+
 .btn {
   border: none;
   border-radius: 10px;
@@ -202,6 +254,33 @@ p {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.results-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.results-summary__item {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.results-summary__item--high {
+  background: var(--color-high-bg);
+  color: var(--color-high);
+}
+
+.results-summary__item--medium {
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .profile-summary {
@@ -250,6 +329,15 @@ p {
   align-items: flex-start;
 }
 
+.opportunity-card__rank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin-bottom: 0.25rem;
+}
+
 .opportunity-card__type {
   font-size: 0.8rem;
   font-weight: 700;
@@ -294,6 +382,37 @@ p {
   font-size: 0.95rem;
 }
 
+.opportunity-card__section--highlight {
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.opportunity-card__section--highlight h4 {
+  color: var(--color-high);
+}
+
+.opportunity-card__section--tips {
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.opportunity-card__section--tips h4 {
+  color: #92400e;
+}
+
+.tips-intro {
+  margin-bottom: 0.5rem !important;
+  font-size: 0.9rem !important;
+}
+
+.checklist--tips {
+  color: #78350f;
+}
+
 .match-badge {
   flex-shrink: 0;
   padding: 0.35rem 0.65rem;
@@ -323,14 +442,63 @@ p {
   color: #475569;
 }
 
-.roadmap-step__item + .roadmap-step__item {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px dashed var(--color-border);
+.roadmap-step__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.checklist--notes {
-  color: #92400e;
+.roadmap-step__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.roadmap-step__theme {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-top: 0.15rem;
+}
+
+.roadmap-step__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.roadmap-step__item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.roadmap-step__step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: var(--color-primary-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 .checklist {
@@ -401,5 +569,17 @@ p {
 
   .opportunity-card__header {
     flex-direction: column;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .header__tracks {
+    gap: 0.4rem;
   }
 }
