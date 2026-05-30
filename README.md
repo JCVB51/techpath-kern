@@ -238,6 +238,3 @@ TechPath Kern was built as an **8-hour hackathon MVP** by a small **2-person tea
 
 ---
 
-## License
-
-Hackathon MVP — contact the team before production or commercial use.
