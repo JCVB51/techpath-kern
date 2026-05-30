@@ -8,10 +8,15 @@ import RoadmapCard from './components/RoadmapCard.jsx'
 import opportunities from './data/opportunities.js'
 import { matchOpportunities } from './utils/matchOpportunities.js'
 import { generateRoadmap } from './services/roadmapService.js'
+import {
+  compareDeadlineSoonest,
+  getDeadlineStatus,
+} from './utils/deadlineUtils.js'
 
 const DEFAULT_MATCH_LEVEL = 'All Matches'
 const DEFAULT_OPPORTUNITY_TYPE = 'All Types'
 const DEFAULT_LOCATION_FILTER = 'All Locations'
+const DEFAULT_DEADLINE_FILTER = 'Active Only'
 const DEFAULT_SORT_OPTION = 'Best Match'
 
 const KERN_CITIES = [
@@ -77,7 +82,28 @@ function matchesLocationFilter(opportunity, locationFilter) {
   return true
 }
 
-// Lower score = more local (used for Most Local sort).
+function matchesDeadlineFilter(opportunity, deadlineFilter) {
+  const status = getDeadlineStatus(opportunity.deadline)
+
+  if (deadlineFilter === 'Active Only') {
+    return status !== 'Expired'
+  }
+
+  if (deadlineFilter === 'Include Expired') {
+    return true
+  }
+
+  if (deadlineFilter === 'Due Soon') {
+    return status === 'Due Soon'
+  }
+
+  if (deadlineFilter === 'Rolling / Ongoing') {
+    return status === 'Rolling'
+  }
+
+  return true
+}
+
 function getLocalRelevanceScore(location) {
   const loc = normalizeLocation(location)
 
@@ -98,23 +124,12 @@ function getLocalRelevanceScore(location) {
   return 7
 }
 
-function parseDeadline(deadline) {
-  if (!deadline) return Number.MAX_SAFE_INTEGER
-
-  const lower = deadline.toLowerCase()
-  if (lower.includes('rolling') || lower.includes('open year-round')) {
-    return Number.MAX_SAFE_INTEGER - 1
-  }
-
-  const parsed = Date.parse(deadline)
-  return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed
-}
-
 function getDisplayedOpportunities(
   matched,
   matchLevel,
   opportunityType,
   locationFilter,
+  deadlineFilter,
   sortOption,
 ) {
   let results = matched.filter((opportunity) => {
@@ -123,13 +138,14 @@ function getDisplayedOpportunities(
     const typeMatch =
       opportunityType === DEFAULT_OPPORTUNITY_TYPE || opportunity.type === opportunityType
     const locationMatch = matchesLocationFilter(opportunity, locationFilter)
-    return levelMatch && typeMatch && locationMatch
+    const deadlineMatch = matchesDeadlineFilter(opportunity, deadlineFilter)
+    return levelMatch && typeMatch && locationMatch && deadlineMatch
   })
 
   results = [...results]
 
   if (sortOption === 'Deadline Soonest') {
-    results.sort((a, b) => parseDeadline(a.deadline) - parseDeadline(b.deadline))
+    results.sort(compareDeadlineSoonest)
   } else if (sortOption === 'Opportunity Type') {
     results.sort((a, b) => {
       const typeCompare = a.type.localeCompare(b.type)
@@ -166,11 +182,11 @@ function App() {
   const [selectedMatchLevel, setSelectedMatchLevel] = useState(DEFAULT_MATCH_LEVEL)
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(DEFAULT_OPPORTUNITY_TYPE)
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(DEFAULT_LOCATION_FILTER)
+  const [selectedDeadlineFilter, setSelectedDeadlineFilter] = useState(DEFAULT_DEADLINE_FILTER)
   const [selectedSortOption, setSelectedSortOption] = useState(DEFAULT_SORT_OPTION)
   const resultsRef = useRef(null)
   const shouldScrollToResultsRef = useRef(false)
 
-  // Start at the top on first load/refresh (ignore restored scroll position or URL hash).
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual'
@@ -191,6 +207,7 @@ function App() {
     setSelectedMatchLevel(DEFAULT_MATCH_LEVEL)
     setSelectedOpportunityType(DEFAULT_OPPORTUNITY_TYPE)
     setSelectedLocationFilter(DEFAULT_LOCATION_FILTER)
+    setSelectedDeadlineFilter(DEFAULT_DEADLINE_FILTER)
     setSelectedSortOption(DEFAULT_SORT_OPTION)
     shouldScrollToResultsRef.current = true
   }
@@ -207,7 +224,6 @@ function App() {
 
   const savedOpportunityIds = savedOpportunities.map((item) => item.id)
 
-  // Use saved opportunities for the roadmap when available; otherwise top matches.
   const roadmapOpportunities = useMemo(() => {
     if (savedOpportunities.length > 0) {
       return savedOpportunities
@@ -229,6 +245,7 @@ function App() {
         selectedMatchLevel,
         selectedOpportunityType,
         selectedLocationFilter,
+        selectedDeadlineFilter,
         selectedSortOption,
       ),
     [
@@ -236,6 +253,7 @@ function App() {
       selectedMatchLevel,
       selectedOpportunityType,
       selectedLocationFilter,
+      selectedDeadlineFilter,
       selectedSortOption,
     ],
   )
@@ -299,10 +317,12 @@ function App() {
               selectedMatchLevel={selectedMatchLevel}
               selectedOpportunityType={selectedOpportunityType}
               selectedLocationFilter={selectedLocationFilter}
+              selectedDeadlineFilter={selectedDeadlineFilter}
               selectedSortOption={selectedSortOption}
               onMatchLevelChange={setSelectedMatchLevel}
               onOpportunityTypeChange={setSelectedOpportunityType}
               onLocationFilterChange={setSelectedLocationFilter}
+              onDeadlineFilterChange={setSelectedDeadlineFilter}
               onSortOptionChange={setSelectedSortOption}
             />
             <SavedOpportunities savedOpportunities={savedOpportunities} />

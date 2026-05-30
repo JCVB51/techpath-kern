@@ -18,6 +18,13 @@ const LOCATION_FILTERS = [
   'Remote / Online',
 ]
 
+const DEADLINE_FILTERS = [
+  'Active Only',
+  'Include Expired',
+  'Due Soon',
+  'Rolling / Ongoing',
+]
+
 const SORT_OPTIONS = [
   'Best Match',
   'Most Local',
@@ -29,17 +36,20 @@ function ResultsControls({
   selectedMatchLevel,
   selectedOpportunityType,
   selectedLocationFilter,
+  selectedDeadlineFilter,
   selectedSortOption,
   onMatchLevelChange,
   onOpportunityTypeChange,
   onLocationFilterChange,
+  onDeadlineFilterChange,
   onSortOptionChange,
 }) {
   return (
     <div className="results-controls card">
       <h3 className="results-controls__title">Filter & Sort Results</h3>
       <p className="results-controls__hint">
-        Narrow your matches by level, type, or location, then choose how to sort them.
+        Narrow your matches by level, type, location, or deadline — then choose how
+        to sort them.
       </p>
 
       <div className="results-controls__grid">
@@ -80,6 +90,20 @@ function ResultsControls({
             {LOCATION_FILTERS.map((location) => (
               <option key={location} value={location}>
                 {location}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="results-controls__field">
+          <span>Deadline</span>
+          <select
+            value={selectedDeadlineFilter}
+            onChange={(event) => onDeadlineFilterChange(event.target.value)}
+          >
+            {DEADLINE_FILTERS.map((option) => (
+              <option key={option} value={option}>
+                {option}
               </option>
             ))}
           </select>

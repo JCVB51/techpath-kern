@@ -12,10 +12,12 @@ const ResultsSection = forwardRef(function ResultsSection(
     selectedMatchLevel,
     selectedOpportunityType,
     selectedLocationFilter,
+    selectedDeadlineFilter,
     selectedSortOption,
     onMatchLevelChange,
     onOpportunityTypeChange,
     onLocationFilterChange,
+    onDeadlineFilterChange,
     onSortOptionChange,
   },
   ref,
@@ -31,8 +33,9 @@ const ResultsSection = forwardRef(function ResultsSection(
         <p className="section-subtitle">
           Ranked results for <strong>{student.name || 'you'}</strong>
           {student.city ? ` in ${student.city}` : ''}. Use the filters below to
-          explore by match level, type, and location — then sort by best match,
-          most local, deadline, or opportunity type.
+          explore by match level, type, location, and deadline — then sort by best
+          match, most local, deadline, or opportunity type. Expired opportunities
+          are hidden by default so you can focus on what you can still apply for.
         </p>
 
         <div className="results-summary">
@@ -68,10 +71,12 @@ const ResultsSection = forwardRef(function ResultsSection(
         selectedMatchLevel={selectedMatchLevel}
         selectedOpportunityType={selectedOpportunityType}
         selectedLocationFilter={selectedLocationFilter}
+        selectedDeadlineFilter={selectedDeadlineFilter}
         selectedSortOption={selectedSortOption}
         onMatchLevelChange={onMatchLevelChange}
         onOpportunityTypeChange={onOpportunityTypeChange}
         onLocationFilterChange={onLocationFilterChange}
+        onDeadlineFilterChange={onDeadlineFilterChange}
         onSortOptionChange={onSortOptionChange}
       />
 

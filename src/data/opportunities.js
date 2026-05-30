@@ -103,7 +103,7 @@ const opportunities = [
     name: 'CSU Bakersfield Pre-College STEM Workshop',
     type: 'Summer Program',
     location: 'Bakersfield, CA',
-    deadline: 'June 1, 2026',
+    deadline: 'June 8, 2026',
     gradeLevels: ['9th Grade', '10th Grade', '11th Grade', '12th Grade'],
     minimumGpa: 2.5,
     interests: ['STEM', 'Engineering', 'Computer Science', 'Robotics', 'College Planning'],
