@@ -11,7 +11,92 @@ import { generateRoadmap } from './services/roadmapService.js'
 
 const DEFAULT_MATCH_LEVEL = 'All Matches'
 const DEFAULT_OPPORTUNITY_TYPE = 'All Types'
+const DEFAULT_LOCATION_FILTER = 'All Locations'
 const DEFAULT_SORT_OPTION = 'Best Match'
+
+const KERN_CITIES = [
+  'delano',
+  'wasco',
+  'shafter',
+  'arvin',
+  'lamont',
+  'taft',
+  'ridgecrest',
+  'mcfarland',
+  'tehachapi',
+]
+
+function normalizeLocation(location) {
+  return (location || '').toLowerCase()
+}
+
+function isKernCountyLocation(location) {
+  const loc = normalizeLocation(location)
+  return (
+    loc.includes('bakersfield') ||
+    loc.includes('kern county') ||
+    loc.includes('kern,') ||
+    KERN_CITIES.some((city) => loc.includes(city))
+  )
+}
+
+function matchesLocationFilter(opportunity, locationFilter) {
+  const loc = normalizeLocation(opportunity.location)
+
+  if (locationFilter === DEFAULT_LOCATION_FILTER) {
+    return true
+  }
+
+  if (locationFilter === 'Bakersfield / Kern County') {
+    return isKernCountyLocation(opportunity.location)
+  }
+
+  if (locationFilter === 'Central Valley') {
+    return loc.includes('central valley') || loc.includes('kern county') || loc.includes('kern,')
+  }
+
+  if (locationFilter === 'California') {
+    return (
+      loc.includes('california') ||
+      loc.includes(', ca') ||
+      loc.endsWith(' ca') ||
+      loc.includes('central valley') ||
+      isKernCountyLocation(opportunity.location)
+    )
+  }
+
+  if (locationFilter === 'Remote / Online') {
+    return (
+      loc.includes('remote') ||
+      loc.includes('online') ||
+      loc.includes('virtual') ||
+      loc.includes('hybrid')
+    )
+  }
+
+  return true
+}
+
+// Lower score = more local (used for Most Local sort).
+function getLocalRelevanceScore(location) {
+  const loc = normalizeLocation(location)
+
+  if (loc.includes('bakersfield')) return 1
+  if (loc.includes('kern county') || loc.includes('kern,')) return 2
+  if (KERN_CITIES.some((city) => loc.includes(city))) return 3
+  if (loc.includes('central valley')) return 4
+  if (loc.includes('california') || loc.includes(', ca') || loc.endsWith(' ca')) return 5
+  if (
+    loc.includes('remote') ||
+    loc.includes('online') ||
+    loc.includes('virtual') ||
+    loc.includes('hybrid')
+  ) {
+    return 6
+  }
+
+  return 7
+}
 
 function parseDeadline(deadline) {
   if (!deadline) return Number.MAX_SAFE_INTEGER
@@ -25,13 +110,20 @@ function parseDeadline(deadline) {
   return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed
 }
 
-function getDisplayedOpportunities(matched, matchLevel, opportunityType, sortOption) {
+function getDisplayedOpportunities(
+  matched,
+  matchLevel,
+  opportunityType,
+  locationFilter,
+  sortOption,
+) {
   let results = matched.filter((opportunity) => {
     const levelMatch =
       matchLevel === DEFAULT_MATCH_LEVEL || opportunity.matchLevel === matchLevel
     const typeMatch =
       opportunityType === DEFAULT_OPPORTUNITY_TYPE || opportunity.type === opportunityType
-    return levelMatch && typeMatch
+    const locationMatch = matchesLocationFilter(opportunity, locationFilter)
+    return levelMatch && typeMatch && locationMatch
   })
 
   results = [...results]
@@ -42,6 +134,13 @@ function getDisplayedOpportunities(matched, matchLevel, opportunityType, sortOpt
     results.sort((a, b) => {
       const typeCompare = a.type.localeCompare(b.type)
       if (typeCompare !== 0) return typeCompare
+      return b.matchScore - a.matchScore
+    })
+  } else if (sortOption === 'Most Local') {
+    results.sort((a, b) => {
+      const localCompare =
+        getLocalRelevanceScore(a.location) - getLocalRelevanceScore(b.location)
+      if (localCompare !== 0) return localCompare
       return b.matchScore - a.matchScore
     })
   } else {
@@ -66,6 +165,7 @@ function App() {
   const [savedOpportunities, setSavedOpportunities] = useState([])
   const [selectedMatchLevel, setSelectedMatchLevel] = useState(DEFAULT_MATCH_LEVEL)
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(DEFAULT_OPPORTUNITY_TYPE)
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState(DEFAULT_LOCATION_FILTER)
   const [selectedSortOption, setSelectedSortOption] = useState(DEFAULT_SORT_OPTION)
   const resultsRef = useRef(null)
   const shouldScrollToResultsRef = useRef(false)
@@ -90,6 +190,7 @@ function App() {
     setSavedOpportunities([])
     setSelectedMatchLevel(DEFAULT_MATCH_LEVEL)
     setSelectedOpportunityType(DEFAULT_OPPORTUNITY_TYPE)
+    setSelectedLocationFilter(DEFAULT_LOCATION_FILTER)
     setSelectedSortOption(DEFAULT_SORT_OPTION)
     shouldScrollToResultsRef.current = true
   }
@@ -127,9 +228,16 @@ function App() {
         matchedOpportunities,
         selectedMatchLevel,
         selectedOpportunityType,
+        selectedLocationFilter,
         selectedSortOption,
       ),
-    [matchedOpportunities, selectedMatchLevel, selectedOpportunityType, selectedSortOption],
+    [
+      matchedOpportunities,
+      selectedMatchLevel,
+      selectedOpportunityType,
+      selectedLocationFilter,
+      selectedSortOption,
+    ],
   )
 
   useEffect(() => {
@@ -190,9 +298,11 @@ function App() {
               onToggleSave={toggleSaveOpportunity}
               selectedMatchLevel={selectedMatchLevel}
               selectedOpportunityType={selectedOpportunityType}
+              selectedLocationFilter={selectedLocationFilter}
               selectedSortOption={selectedSortOption}
               onMatchLevelChange={setSelectedMatchLevel}
               onOpportunityTypeChange={setSelectedOpportunityType}
+              onLocationFilterChange={setSelectedLocationFilter}
               onSortOptionChange={setSelectedSortOption}
             />
             <SavedOpportunities savedOpportunities={savedOpportunities} />

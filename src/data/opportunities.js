@@ -192,7 +192,7 @@ const opportunities = [
     id: 9,
     name: 'Central Valley AgTech Student Challenge',
     type: 'Hackathon',
-    location: 'Kern County, CA',
+    location: 'Central Valley / Kern County, CA',
     deadline: 'April 15, 2026',
     gradeLevels: ['10th Grade', '11th Grade', '12th Grade', 'College Freshman', 'College Sophomore'],
     minimumGpa: 0,
@@ -203,7 +203,7 @@ const opportunities = [
       'A student innovation challenge focused on agriculture technology — water efficiency, crop monitoring, and farm automation ideas welcome from across the Central Valley.',
     checklist: [
       'Form or join a team of 2–5 students',
-      'Register your team before the deadline',
+      'Register the team before the deadline',
       'Review the challenge theme and submission format',
       'Prepare a short pitch describing your AgTech idea',
     ],
@@ -287,6 +287,34 @@ const opportunities = [
       'Bookmark three careers or programs to explore this month',
     ],
     sourceNote: 'Demo/sample entry for TechPath Kern — composite career resource for the MVP demo.',
+  },
+  {
+    id: 13,
+    name: 'Virtual STEM & AI Skills Bootcamp',
+    type: 'STEM Program',
+    location: 'Remote / Online',
+    deadline: 'Rolling',
+    gradeLevels: [
+      '9th Grade',
+      '10th Grade',
+      '11th Grade',
+      '12th Grade',
+      'College Freshman',
+      'College Sophomore',
+    ],
+    minimumGpa: 0,
+    interests: ['Computer Science', 'Artificial Intelligence', 'Technology', 'STEM', 'Programming'],
+    skills: ['Python', 'self-motivation', 'time management', 'problem solving'],
+    eligibilityTags: ['remote', 'online', 'beginner friendly', 'flexible schedule'],
+    description:
+      'A flexible online bootcamp for students who want to build coding and AI fundamentals from home — open to Kern County students who need virtual options.',
+    checklist: [
+      'Create a free account on the program platform',
+      'Complete the skills self-assessment',
+      'Set a weekly study schedule',
+      'Finish one small project during the first month',
+    ],
+    sourceNote: 'Demo/sample entry for TechPath Kern — representative of remote/online STEM programs.',
   },
 ]
 

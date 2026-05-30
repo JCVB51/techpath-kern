@@ -10,21 +10,36 @@ const OPPORTUNITY_TYPES = [
   'Career Resource',
 ]
 
-const SORT_OPTIONS = ['Best Match', 'Deadline Soonest', 'Opportunity Type']
+const LOCATION_FILTERS = [
+  'All Locations',
+  'Bakersfield / Kern County',
+  'Central Valley',
+  'California',
+  'Remote / Online',
+]
+
+const SORT_OPTIONS = [
+  'Best Match',
+  'Most Local',
+  'Deadline Soonest',
+  'Opportunity Type',
+]
 
 function ResultsControls({
   selectedMatchLevel,
   selectedOpportunityType,
+  selectedLocationFilter,
   selectedSortOption,
   onMatchLevelChange,
   onOpportunityTypeChange,
+  onLocationFilterChange,
   onSortOptionChange,
 }) {
   return (
     <div className="results-controls card">
       <h3 className="results-controls__title">Filter & Sort Results</h3>
       <p className="results-controls__hint">
-        Narrow your matches by level or type, then choose how to sort them.
+        Narrow your matches by level, type, or location, then choose how to sort them.
       </p>
 
       <div className="results-controls__grid">
@@ -51,6 +66,20 @@ function ResultsControls({
             {OPPORTUNITY_TYPES.map((type) => (
               <option key={type} value={type}>
                 {type}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="results-controls__field">
+          <span>Location</span>
+          <select
+            value={selectedLocationFilter}
+            onChange={(event) => onLocationFilterChange(event.target.value)}
+          >
+            {LOCATION_FILTERS.map((location) => (
+              <option key={location} value={location}>
+                {location}
               </option>
             ))}
           </select>

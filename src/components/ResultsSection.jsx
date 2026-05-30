@@ -11,9 +11,11 @@ const ResultsSection = forwardRef(function ResultsSection(
     onToggleSave,
     selectedMatchLevel,
     selectedOpportunityType,
+    selectedLocationFilter,
     selectedSortOption,
     onMatchLevelChange,
     onOpportunityTypeChange,
+    onLocationFilterChange,
     onSortOptionChange,
   },
   ref,
@@ -29,8 +31,8 @@ const ResultsSection = forwardRef(function ResultsSection(
         <p className="section-subtitle">
           Ranked results for <strong>{student.name || 'you'}</strong>
           {student.city ? ` in ${student.city}` : ''}. Use the filters below to
-          explore by match level or type, and sort by best match, deadline, or
-          opportunity type.
+          explore by match level, type, and location — then sort by best match,
+          most local, deadline, or opportunity type.
         </p>
 
         <div className="results-summary">
@@ -65,9 +67,11 @@ const ResultsSection = forwardRef(function ResultsSection(
       <ResultsControls
         selectedMatchLevel={selectedMatchLevel}
         selectedOpportunityType={selectedOpportunityType}
+        selectedLocationFilter={selectedLocationFilter}
         selectedSortOption={selectedSortOption}
         onMatchLevelChange={onMatchLevelChange}
         onOpportunityTypeChange={onOpportunityTypeChange}
+        onLocationFilterChange={onLocationFilterChange}
         onSortOptionChange={onSortOptionChange}
       />
 
