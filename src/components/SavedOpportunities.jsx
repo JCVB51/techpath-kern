@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import {
+  getDeadlineBadgeClass,
+  getDeadlineStatus,
+} from '../utils/deadlineUtils.js'
 
 const SAVED_TYPE_FILTERS = [
   'All Saved',
@@ -103,9 +107,25 @@ function SavedOpportunities({ savedOpportunities }) {
                       </span>
                     </div>
 
-                    <p className="saved-opportunity__deadline">
-                      <strong>Deadline:</strong> {opportunity.deadline}
-                    </p>
+                    <div className="saved-opportunity__deadline-row">
+                      <p className="saved-opportunity__deadline">
+                        <strong>Deadline:</strong> {opportunity.deadline}
+                      </p>
+                      <span
+                        className={getDeadlineBadgeClass(
+                          getDeadlineStatus(opportunity.deadline),
+                        )}
+                      >
+                        {getDeadlineStatus(opportunity.deadline)}
+                      </span>
+                    </div>
+
+                    {getDeadlineStatus(opportunity.deadline) === 'Expired' && (
+                      <p className="saved-opportunity__deadline-note">
+                        This deadline has passed. You can keep it here for reference
+                        or look for a similar future opportunity.
+                      </p>
+                    )}
 
                     <div className="saved-opportunity__next-action">
                       <h4>Suggested next action</h4>

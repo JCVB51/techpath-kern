@@ -1,3 +1,8 @@
+import {
+  getDeadlineBadgeClass,
+  getDeadlineStatus,
+} from '../utils/deadlineUtils.js'
+
 function getMatchBadgeClass(matchLevel) {
   if (matchLevel === 'High') {
     return 'match-badge match-badge--excellent'
@@ -11,6 +16,8 @@ function getMatchBadgeClass(matchLevel) {
 }
 
 function OpportunityCard({ opportunity, rank, isSaved, onToggleSave }) {
+  const deadlineStatus = getDeadlineStatus(opportunity.deadline)
+
   return (
     <article className="opportunity-card">
       <div className="opportunity-card__header">
@@ -33,9 +40,19 @@ function OpportunityCard({ opportunity, rank, isSaved, onToggleSave }) {
         <strong>Location:</strong> {opportunity.location}
       </p>
 
-      <p className="opportunity-card__deadline">
-        <strong>Deadline:</strong> {opportunity.deadline}
-      </p>
+      <div className="opportunity-card__deadline-row">
+        <p className="opportunity-card__deadline">
+          <strong>Deadline:</strong> {opportunity.deadline}
+        </p>
+        <span className={getDeadlineBadgeClass(deadlineStatus)}>{deadlineStatus}</span>
+      </div>
+
+      {deadlineStatus === 'Expired' && (
+        <p className="opportunity-card__deadline-note">
+          This deadline has passed, but you can still review the opportunity for
+          future reference.
+        </p>
+      )}
 
       <div className="opportunity-card__section opportunity-card__section--highlight">
         <h4>Why it matches you</h4>
