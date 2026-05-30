@@ -10,7 +10,7 @@ function getMatchBadgeClass(matchLevel) {
   return 'match-badge match-badge--low'
 }
 
-function OpportunityCard({ opportunity, rank }) {
+function OpportunityCard({ opportunity, rank, isSaved, onToggleSave }) {
   return (
     <article className="opportunity-card">
       <div className="opportunity-card__header">
@@ -65,9 +65,18 @@ function OpportunityCard({ opportunity, rank }) {
         </ul>
       </div>
 
-      <button type="button" className="btn btn--outline">
-        Learn More / Apply Soon
-      </button>
+      <div className="opportunity-card__actions">
+        <button
+          type="button"
+          className={isSaved ? 'btn btn--saved' : 'btn btn--secondary'}
+          onClick={() => onToggleSave(opportunity)}
+        >
+          {isSaved ? 'Saved' : 'Save Opportunity'}
+        </button>
+        <button type="button" className="btn btn--outline">
+          Learn More / Apply Soon
+        </button>
+      </div>
     </article>
   )
 }

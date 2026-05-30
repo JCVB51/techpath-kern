@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Header from './components/Header.jsx'
 import StudentForm from './components/StudentForm.jsx'
 import ResultsSection from './components/ResultsSection.jsx'
+import SavedOpportunities from './components/SavedOpportunities.jsx'
 import RoadmapCard from './components/RoadmapCard.jsx'
 import opportunities from './data/opportunities.js'
 import { matchOpportunities } from './utils/matchOpportunities.js'
@@ -11,6 +12,7 @@ function App() {
   const [studentProfile, setStudentProfile] = useState(null)
   const [matchedOpportunities, setMatchedOpportunities] = useState([])
   const [roadmap, setRoadmap] = useState([])
+  const [savedOpportunities, setSavedOpportunities] = useState([])
   const resultsRef = useRef(null)
 
   function handleFormSubmit(formData) {
@@ -18,7 +20,20 @@ function App() {
     setStudentProfile(formData)
     setMatchedOpportunities(matches)
     setRoadmap(generateRoadmap(formData, matches))
+    setSavedOpportunities([])
   }
+
+  function toggleSaveOpportunity(opportunity) {
+    setSavedOpportunities((prev) => {
+      const alreadySaved = prev.some((item) => item.id === opportunity.id)
+      if (alreadySaved) {
+        return prev.filter((item) => item.id !== opportunity.id)
+      }
+      return [...prev, opportunity]
+    })
+  }
+
+  const savedOpportunityIds = savedOpportunities.map((item) => item.id)
 
   useEffect(() => {
     if (studentProfile && resultsRef.current) {
@@ -57,7 +72,10 @@ function App() {
               ref={resultsRef}
               student={studentProfile}
               opportunities={matchedOpportunities}
+              savedOpportunityIds={savedOpportunityIds}
+              onToggleSave={toggleSaveOpportunity}
             />
+            <SavedOpportunities savedOpportunities={savedOpportunities} />
             <RoadmapCard student={studentProfile} roadmap={roadmap} />
           </>
         )}

@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import OpportunityCard from './OpportunityCard.jsx'
 
 const ResultsSection = forwardRef(function ResultsSection(
-  { student, opportunities },
+  { student, opportunities, savedOpportunityIds, onToggleSave },
   ref,
 ) {
   const highCount = opportunities.filter((item) => item.matchLevel === 'High').length
@@ -52,6 +52,8 @@ const ResultsSection = forwardRef(function ResultsSection(
             key={opportunity.id}
             opportunity={opportunity}
             rank={index + 1}
+            isSaved={savedOpportunityIds.includes(opportunity.id)}
+            onToggleSave={onToggleSave}
           />
         ))}
       </div>
