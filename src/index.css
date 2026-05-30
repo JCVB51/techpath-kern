@@ -21,6 +21,11 @@
   --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
   --radius: 16px;
   --max-width: 1100px;
+  --navbar-height: 3.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -49,17 +54,154 @@ p {
 .main-content {
   width: min(calc(100% - 2rem), var(--max-width));
   margin: 0 auto;
-  padding: 2rem 0 3rem;
+  padding: 2.5rem 0 3.5rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
   flex: 1;
+}
+
+.page-section {
+  scroll-margin-top: calc(var(--navbar-height) + 1rem);
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar__inner {
+  width: min(calc(100% - 2rem), var(--max-width));
+  margin: 0 auto;
+  min-height: var(--navbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navbar__brand {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar__brand:hover {
+  color: var(--color-primary);
+}
+
+.navbar__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  justify-content: flex-end;
+}
+
+.navbar__link {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navbar__link:hover {
+  background: #eff6ff;
+  color: var(--color-primary);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+  margin-bottom: 0.35rem;
+}
+
+.section-subtitle--flush {
+  margin-bottom: 0;
+}
+
+.section-placeholder {
+  border-style: dashed;
+  background: #fafbff;
+}
+
+.saved-opportunities-section {
+  padding-top: 0.5rem;
+}
+
+.saved-opportunities__count {
+  flex-shrink: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--color-high-bg);
+  color: var(--color-high);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.saved-opportunities__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  max-width: 280px;
+}
+
+.saved-opportunities__filter select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 400;
+  color: var(--color-text);
+  background: #fff;
+}
+
+.saved-opportunities__filter select:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.25);
+  border-color: var(--color-primary);
+}
+
+.saved-opportunities__empty--filter {
+  margin-top: 0.5rem;
+}
+
+.roadmap-section {
+  padding-top: 0.5rem;
 }
 
 .header {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #0ea5e9 100%);
   color: white;
-  padding: 3rem 1.5rem 4rem;
+  padding: 2.5rem 1.5rem 3.5rem;
+  scroll-margin-top: var(--navbar-height);
 }
 
 .header__content {
@@ -117,6 +259,11 @@ p {
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: 1.5rem;
+  transition: box-shadow 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .section-title {
@@ -352,7 +499,6 @@ p {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  scroll-margin-top: 1rem;
 }
 
 .results-controls__title {
@@ -707,12 +853,39 @@ p {
   }
 
   .header {
-    padding: 2.5rem 1rem 3rem;
+    padding: 2rem 1rem 2.5rem;
   }
 
   .main-content {
     width: min(calc(100% - 1rem), var(--max-width));
     padding-top: 1.5rem;
+    gap: 2rem;
+  }
+
+  .navbar__inner {
+    width: min(calc(100% - 1rem), var(--max-width));
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.65rem 0;
+  }
+
+  .navbar__links {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.15rem;
+  }
+
+  .navbar__link {
+    white-space: nowrap;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+
+  .saved-opportunities__filter {
+    max-width: none;
   }
 
   .opportunity-card__header {

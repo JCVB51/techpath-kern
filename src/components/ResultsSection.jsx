@@ -23,7 +23,7 @@ const ResultsSection = forwardRef(function ResultsSection(
   const isFiltered = opportunities.length !== totalCount
 
   return (
-    <section className="results-section" ref={ref} id="results-section">
+    <section className="results-section page-section" ref={ref} id="results">
       <div className="results-section__intro card">
         <h2 className="section-title">Your Matched Opportunities</h2>
         <p className="section-subtitle">

@@ -9,13 +9,19 @@ function RoadmapCard({ student, roadmap }) {
   const firstName = student.name ? student.name.split(' ')[0] : 'Student'
 
   return (
-    <section className="card roadmap-card">
-      <h2 className="section-title">Your 30-Day Action Plan</h2>
-      <p className="section-subtitle">
-        {firstName}, here is a simple week-by-week plan to help you take action.
-        Small steps add up — you do not need to do everything at once.
-      </p>
+    <section className="roadmap-section page-section" id="roadmap">
+      <div className="section-header">
+        <div>
+          <p className="section-label">Next 30 days</p>
+          <h2 className="section-title">Your 30-Day Action Plan</h2>
+          <p className="section-subtitle section-subtitle--flush">
+            {firstName}, here is a simple week-by-week plan to help you take action.
+            Small steps add up — you do not need to do everything at once.
+          </p>
+        </div>
+      </div>
 
+      <div className="card roadmap-card">
       <ol className="roadmap-list">
         {roadmap.map((weekPlan, weekIndex) => (
           <li key={weekPlan.week} className="roadmap-step">
@@ -42,6 +48,7 @@ function RoadmapCard({ student, roadmap }) {
           </li>
         ))}
       </ol>
+      </div>
     </section>
   )
 }

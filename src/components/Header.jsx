@@ -1,6 +1,6 @@
 function Header() {
   return (
-    <header className="header">
+    <header className="header" id="home">
       <div className="header__content">
         <p className="header__badge">Kern County · Hackathon MVP</p>
         <h1 className="header__title">TechPath Kern</h1>

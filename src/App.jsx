@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import Navbar from './components/Navbar.jsx'
 import Header from './components/Header.jsx'
 import StudentForm from './components/StudentForm.jsx'
 import ResultsSection from './components/ResultsSection.jsx'
@@ -12,7 +13,6 @@ const DEFAULT_MATCH_LEVEL = 'All Matches'
 const DEFAULT_OPPORTUNITY_TYPE = 'All Types'
 const DEFAULT_SORT_OPTION = 'Best Match'
 
-// Rolling or open deadlines sort near the end of the list.
 function parseDeadline(deadline) {
   if (!deadline) return Number.MAX_SAFE_INTEGER
 
@@ -34,7 +34,6 @@ function getDisplayedOpportunities(matched, matchLevel, opportunityType, sortOpt
     return levelMatch && typeMatch
   })
 
-  // Copy before sorting so matchedOpportunities is never mutated.
   results = [...results]
 
   if (sortOption === 'Deadline Soonest') {
@@ -50,6 +49,15 @@ function getDisplayedOpportunities(matched, matchLevel, opportunityType, sortOpt
   }
 
   return results
+}
+
+function SectionPlaceholder({ id, title, message }) {
+  return (
+    <section className="card section-placeholder page-section" id={id}>
+      <h2 className="section-title">{title}</h2>
+      <p className="section-subtitle section-subtitle--flush">{message}</p>
+    </section>
+  )
 }
 
 function App() {
@@ -106,25 +114,40 @@ function App() {
 
   return (
     <div className="app">
+      <Navbar />
       <Header />
 
       <main className="main-content">
         <StudentForm onSubmit={handleFormSubmit} />
 
         {!hasResults && (
-          <section className="card empty-state">
-            <h2 className="section-title">Ready to explore?</h2>
-            <p className="section-subtitle">
-              Fill out your profile above or click <strong>Use Demo Profile</strong>{' '}
-              to try a sample student from Bakersfield. We will rank scholarships,
-              internships, STEM programs, and more based on your answers.
-            </p>
-            <ul className="empty-state__steps">
-              <li>1. Enter your profile (or use the demo)</li>
-              <li>2. See ranked opportunity matches</li>
-              <li>3. Follow your personalized 30-day action plan</li>
-            </ul>
-          </section>
+          <>
+            <section className="card empty-state page-section" id="results">
+              <h2 className="section-title">Ready to explore?</h2>
+              <p className="section-subtitle section-subtitle--flush">
+                Fill out your profile above or click <strong>Use Demo Profile</strong>{' '}
+                to try a sample student from Bakersfield. We will rank scholarships,
+                internships, STEM programs, and more based on your answers.
+              </p>
+              <ul className="empty-state__steps">
+                <li>1. Enter your profile (or use the demo)</li>
+                <li>2. See ranked opportunity matches</li>
+                <li>3. Save opportunities and follow your 30-day action plan</li>
+              </ul>
+            </section>
+
+            <SectionPlaceholder
+              id="saved"
+              title="My Saved Opportunities"
+              message="Save opportunities from your results to build a personal application plan. Submit your profile first to see matched opportunities."
+            />
+
+            <SectionPlaceholder
+              id="roadmap"
+              title="Your 30-Day Action Plan"
+              message="After you submit your profile, TechPath Kern will generate a personalized week-by-week roadmap based on your top matches."
+            />
+          </>
         )}
 
         {hasResults && (

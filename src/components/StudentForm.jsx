@@ -108,7 +108,7 @@ function StudentForm({ onSubmit }) {
   }
 
   return (
-    <section className="card form-section">
+    <section className="card form-section page-section" id="profile">
       <h2 className="section-title">Student Profile</h2>
       <p className="section-subtitle">
         Tell us a little about yourself so we can suggest opportunities that
