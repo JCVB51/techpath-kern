@@ -262,6 +262,21 @@ p {
   color: var(--color-medium);
 }
 
+.match-badge--low {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.roadmap-step__item + .roadmap-step__item {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.checklist--notes {
+  color: #92400e;
+}
+
 .checklist {
   margin: 0;
   padding-left: 1.2rem;

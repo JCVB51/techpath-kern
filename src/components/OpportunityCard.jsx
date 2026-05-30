@@ -1,8 +1,10 @@
 function OpportunityCard({ opportunity }) {
-  const matchClass =
-    opportunity.matchLevel === 'High'
-      ? 'match-badge match-badge--high'
-      : 'match-badge match-badge--medium'
+  const matchClassMap = {
+    High: 'match-badge match-badge--high',
+    Medium: 'match-badge match-badge--medium',
+    Low: 'match-badge match-badge--low',
+  }
+  const matchClass = matchClassMap[opportunity.matchLevel] || matchClassMap.Medium
 
   return (
     <article className="opportunity-card">
@@ -22,6 +24,17 @@ function OpportunityCard({ opportunity }) {
         <h4>Why it matches you</h4>
         <p>{opportunity.whyItMatches}</p>
       </div>
+
+      {opportunity.missingRequirements?.length > 0 && (
+        <div className="opportunity-card__section">
+          <h4>Things to double-check</h4>
+          <ul className="checklist checklist--notes">
+            {opportunity.missingRequirements.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="opportunity-card__section">
         <h4>Application checklist</h4>
